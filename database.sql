@@ -2,6 +2,28 @@ CREATE DATABASE Facturacion1;
 
 USE Facturacion1;
 
+CREATE TABLE t_rol (
+    id_rol      int(11)         AUTO_INCREMENT NOT NULL,
+    rol         varchar(20)     NOT NULL,
+    CONSTRAINT  pk_rol          PRIMARY KEY(id_rol) 
+)ENGINE=InnoDB;
+
+INSERT INTO t_rol (id_rol, rol) VALUES(NULL, "Administrador"),(NULL,"secretario"), (NULL,"BODEGA");
+
+CREATE TABLE t_usuario (
+    id_usuario      int(11)             AUTO_INCREMENT           NOT NULL,
+    nombre          varchar(100)        NOT NULL,
+    apellido        varchar(100)        NOT NULL,
+    correo          varchar(100)        NOT NULL,
+    password        varchar(100)        NOT NULL,
+    id_rol          int(11)             NOT NULL,
+    CONSTRAINT      pk_usuario          PRIMARY KEY(id_usuario),
+    CONSTRAINT      fk_rol              FOREIGN KEY(id_rol) REFERENCES t_rol(id_rol)               
+
+)ENGINE=InnoDB;
+
+
+
 CREATE TABLE t_ciudad(
     id_ciudad       int(11)     AUTO_INCREMENT NOT NULL,
     ciudad          varchar(100),
@@ -55,3 +77,25 @@ CREATE TABLE t_factura(
 
 
 )ENGINE=InnoDb;
+
+
+
+
+
+SELECT FAC.id_factura,
+  FAC.fecha,
+       FAC.id_usuario,
+       USU.nombre,
+       USU.apellido,
+       FAC.id_cliente,
+       CLI.nombre_cliente,
+       CLI.direccion,
+       FAC.id_producto,
+       PRO.producto,
+       PRO.valor_unitario,
+       FAC.cantidad * PRO.valor_unitario AS total
+     
+FROM t_factura FAC
+INNER JOIN  t_usuario USU on USU.id_usuario =  FAC.id_usuario
+INNER JOIN  t_cliente CLI on CLI.id_cliente =  FAC.id_cliente
+INNER JOIN  t_producto PRO on PRO.id_producto = FAC.id_producto
